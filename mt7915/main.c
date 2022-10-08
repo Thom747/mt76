@@ -3,6 +3,7 @@
 
 #include <linux/etherdevice.h>
 #include <linux/platform_device.h>
+#include <linux/printk.h>
 #include <linux/pci.h>
 #include <linux/module.h>
 #include "mt7915.h"
@@ -22,6 +23,7 @@ static bool mt7915_dev_running(struct mt7915_dev *dev)
 
 static int mt7915_start(struct ieee80211_hw *hw)
 {
+	printk(KERN_EMERG "mt7915e: Check it out, Thom! I'm Starting!");
 	struct mt7915_dev *dev = mt7915_hw_dev(hw);
 	struct mt7915_phy *phy = mt7915_hw_phy(hw);
 	bool running;

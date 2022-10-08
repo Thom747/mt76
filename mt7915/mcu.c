@@ -2,6 +2,7 @@
 /* Copyright (C) 2020 MediaTek Inc. */
 
 #include <linux/fs.h>
+#include <linux/printk.h>
 #include "mt7915.h"
 #include "mcu.h"
 #include "mac.h"
@@ -2413,15 +2414,21 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
 		e->aifs = q->aifs;
 		e->txop = cpu_to_le16(q->txop);
 
+		int default_min = 0;
 		if (q->cw_min)
 			e->cw_min = fls(q->cw_min);
 		else
+			default_min = 1;
 			e->cw_min = 5;
 
+		int default_max = 0;
 		if (q->cw_max)
 			e->cw_max = cpu_to_le16(fls(q->cw_max));
 		else
+			default_max = 1;
 			e->cw_max = cpu_to_le16(10);
+		printk(KERN_EMERG "mt7915: AC %d: cw_min=%u (%d), cw_max=%u (%d)",
+				ac, e->cw_min, default_min, e->cw_max, default_max);
 	}
 
 	return mt7915_mcu_update_edca(dev, &req);
