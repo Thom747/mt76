@@ -2413,6 +2413,7 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
 		e->queue = ac + mvif->mt76.wmm_idx * MT76_CONNAC_MAX_WMM_SETS;
 		e->aifs = q->aifs;
 		e->txop = cpu_to_le16(q->txop);
+        printk(KERN_EMERG "mt7915e: AC %d: aifs=%u , txop=%u", q->aifs, q->txop);
 
 		int default_min = 0;
 		if (q->cw_min)
@@ -2427,7 +2428,7 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
 		else
 			default_max = 1;
 			e->cw_max = cpu_to_le16(10);
-		printk(KERN_EMERG "mt7915: AC %d: cw_min=%u (%d), cw_max=%u (%d)",
+		printk(KERN_EMERG "mt7915e: AC %d: cw_min=%u (%d), cw_max=%u (%d)",
 				ac, e->cw_min, default_min, e->cw_max, default_max);
 	}
 
