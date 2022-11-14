@@ -2417,10 +2417,10 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
         "mt7915e: AC %d: aifs=%u , txop=%u", ac, q->aifs, q->txop);
 
         int default_min = 0;
-#define CWMIN_OVERRIDE (fls(5))
+#define CWMIN_OVERRIDE (5)
 #ifdef CWMIN_OVERRIDE
         printk(KERN_EMERG
-        "mt7915e: AC %d: Overriding cw_min from %u with %u", ac, q->cw_min, CWMIN_OVERRIDE);
+        "mt7915e: AC %d: Overriding cw_min from %u with %u", ac, (q->cw_min ? fls(q->cw_min) : 5), CWMIN_OVERRIDE);
         e->cw_min = CWMIN_OVERRIDE;
 #else
         if (q->cw_min)
