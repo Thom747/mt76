@@ -2406,31 +2406,39 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
 	int ac;
 
 	for (ac = 0; ac < IEEE80211_NUM_ACS; ac++) {
-		struct ieee80211_tx_queue_params *q = &mvif->queue_params[ac];
-		struct edca *e = &req.edca[ac];
+        struct ieee80211_tx_queue_params *q = &mvif->queue_params[ac];
+        struct edca *e = &req.edca[ac];
 
-		e->set = WMM_PARAM_SET;
-		e->queue = ac + mvif->mt76.wmm_idx * MT76_CONNAC_MAX_WMM_SETS;
-		e->aifs = q->aifs;
-		e->txop = cpu_to_le16(q->txop);
-        printk(KERN_EMERG "mt7915e: AC %d: aifs=%u , txop=%u", ac, q->aifs, q->txop);
+        e->set = WMM_PARAM_SET;
+        e->queue = ac + mvif->mt76.wmm_idx * MT76_CONNAC_MAX_WMM_SETS;
+        e->aifs = q->aifs;
+        e->txop = cpu_to_le16(q->txop);
+        printk(KERN_EMERG
+        "mt7915e: AC %d: aifs=%u , txop=%u", ac, q->aifs, q->txop);
 
-		int default_min = 0;
-		if (q->cw_min)
-			e->cw_min = fls(q->cw_min);
-		else
-			default_min = 1;
-			e->cw_min = 5;
-
-		int default_max = 0;
-		if (q->cw_max)
-			e->cw_max = cpu_to_le16(fls(q->cw_max));
-		else
+        int default_min = 0;
+#define CWMIN_OVERRIDE (fls(5))
+#ifdef CWMIN_OVERRIDE
+        printk(KERN_EMERG
+        "mt7915e: AC %d: Overriding cw_min from %u with %u", ac, q->cw_min, CWMIN_OVERRIDE);
+        e->cw_min = CWMIN_OVERRIDE;
+#else
+        if (q->cw_min)
+            e->cw_min = fls(q->cw_min);
+        else
+            default_min = 1;
+            e->cw_min = 5;
+#endif //CWMIN_OVERRIDE
+        int default_max = 0;
+        if (q->cw_max)
+            e->cw_max = cpu_to_le16(fls(q->cw_max));
+        else
 			default_max = 1;
 			e->cw_max = cpu_to_le16(10);
 		printk(KERN_EMERG "mt7915e: AC %d: cw_min=%u (%d), cw_max=%u (%d)",
 				ac, e->cw_min, default_min, e->cw_max, default_max);
-	}
+
+    }
 
 	return mt7915_mcu_update_edca(dev, &req);
 }
