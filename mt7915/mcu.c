@@ -2417,7 +2417,7 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
         "mt7915e: AC %d: aifs=%u , txop=%u", ac, q->aifs, q->txop);
 
         int default_min = 0;
-#define CWMIN_OVERRIDE (5)
+//#define CWMIN_OVERRIDE (5)
 #ifdef CWMIN_OVERRIDE
         printk(KERN_EMERG
         "mt7915e: AC %d: Overriding cw_min from %u with %u", ac, (q->cw_min ? fls(q->cw_min) : 5), CWMIN_OVERRIDE);
@@ -2435,8 +2435,8 @@ int mt7915_mcu_set_tx(struct mt7915_dev *dev, struct ieee80211_vif *vif)
         else
 			default_max = 1;
 			e->cw_max = cpu_to_le16(10);
-		printk(KERN_EMERG "mt7915e: AC %d: cw_min=%u (%d), cw_max=%u (%d)",
-				ac, e->cw_min, default_min, e->cw_max, default_max);
+		printk(KERN_EMERG "mt7915e: AC %d: q->cw_min=%u, e->cw_min=%u (%d), q->cw_max=%u, e->cw_max=%u (%d)",
+				ac, q->cw_min, e->cw_min, default_min, q->cw_max, e->cw_max, default_max);
 
     }
 
